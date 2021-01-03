@@ -37,7 +37,7 @@ with sq.connect('db.sqlite3') as con:
     cur.execute("DELETE FROM users WHERE score < 1000")
 
     # aggregation and grouping GROUP BY
-    cur.execute("SELECT count(user_id) as count FROM users WHERE user_id=1")
+    cur.execute("SELECT sum(user_id) as count FROM users WHERE user_id=1")
     # count()
     # sum()
     # avr() - the arithmetic mean
@@ -47,3 +47,18 @@ with sq.connect('db.sqlite3') as con:
     cur.execute("SELECT user_id, sun(score) as sum FROM users GROUP BY user_id")
 
     # JOIN
+    cur.execute("SELECT name, age, games.score FROM games JOIN users ON games.user_id=users.rawid")  # summary report
+    cur.execute("SELECT name, age, games.score FROM users, games")  # a set of data, not a summary report
+
+    # UNION
+    cur.execute('''SELECT score, 'from' FROM tab1
+    UNION SELECT val, type FROM tab2
+    )''')
+
+    # nested queries
+    cur.execute('''INSERT INTO adults
+    SELECT NULL, name, age FROM users WHERE age > 25
+    )''')
+
+    # con.commit()
+    # con.close()
